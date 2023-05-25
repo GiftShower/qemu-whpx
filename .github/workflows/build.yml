@@ -37,6 +37,7 @@ jobs:
         run: |
           mkdir -p $HOME/qemu-virgl
           make DESTDIR=$HOME/qemu-virgl install
+          mv $HOME/qemu-virgl/a/_temp/msys64 $HOME/qemu-virgl/msys64
           cd $HOME/qemu-virgl/msys64/ucrt64/
           cp $(ldd qemu-system-x86_64.exe | grep -i /ucrt64/ | awk '{print $3}') .
       - name: make Image

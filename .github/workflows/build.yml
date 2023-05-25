@@ -42,7 +42,7 @@ jobs:
           cp $(ldd qemu-system-x86_64.exe | grep -i /ucrt64/ | awk '{print $3}') .
       - name: make Image
         run: |
-          cd $HOMR/qemu-virgl
+          cd $HOME/qemu-virgl
           qemu-img.exe create -f qcow2 bliss.img 20G
       - name: generate UEFI
         run: |

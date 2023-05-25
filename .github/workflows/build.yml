@@ -46,6 +46,7 @@ jobs:
           qemu-img.exe create -f qcow2 bliss.img 20G
       - name: generate UEFI
         run: |
+          cd $HOME/qemu-virgl
           cat msys64/ucrt64/share/edk2-i386-vars.fd msys64/ucrt64/share/edk2-x86_64-code.fd > edk2-x86_64.fd
       - name: make artifact
         run: |

@@ -1417,12 +1417,14 @@ if not get_option('coreaudio').auto() or (targetos == 'darwin' and have_system)
                          required: get_option('coreaudio'))
 endif
 
+egl = not_found
 opengl = not_found
 if not get_option('opengl').auto() or have_system or have_vhost_user_gpu
   epoxy = dependency('epoxy', method: 'pkg-config',
                       required: get_option('opengl'))
+  opengl = epoxy
   if cc.has_header('epoxy/egl.h', dependencies: epoxy)
-    opengl = epoxy
+    egl = epoxy
   elif get_option('opengl').enabled()
     error('epoxy/egl.h not found')
   endif
@@ -2101,6 +2103,7 @@ config_host_data.set('CONFIG_MPATH_NEW_API', mpathpersist_new_api)
 config_host_data.set('CONFIG_BLKIO', blkio.found())
 config_host_data.set('CONFIG_CURL', curl.found())
 config_host_data.set('CONFIG_CURSES', curses.found())
+config_host_data.set('CONFIG_EGL', egl.found())
 config_host_data.set('CONFIG_GBM', gbm.found())
 config_host_data.set('CONFIG_GIO', gio.found())
 config_host_data.set('CONFIG_GLUSTERFS', glusterfs.found())
@@ -4303,6 +4306,7 @@ summary_info += {'U2F support':       u2f}
 summary_info += {'libusb':            libusb}
 summary_info += {'usb net redir':     usbredir}
 summary_info += {'OpenGL support (epoxy)': opengl}
+summary_info += {'EGL':               egl}
 summary_info += {'GBM':               gbm}
 summary_info += {'libiscsi support':  libiscsi}
 summary_info += {'libnfs support':    libnfs}

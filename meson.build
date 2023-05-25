@@ -1,19 +1,3 @@
-#define EGL_HELPERS_H
-
-#include <epoxy/gl.h>
-#ifdef CONFIG_EGL
-#include <epoxy/egl.h>
-#else
-typedef int EGLConfig;
-typedef int EGLContext;
-typedef int EGLDisplay;
-typedef int EGLNativeWindowType;
-typedef int EGLSurface;
-#endif
-#ifdef CONFIG_GBM
-#include <gbm.h>
-#endif
-
 project('qemu', ['c'], meson_version: '>=0.63.0',
         default_options: ['warning_level=1', 'c_std=gnu11', 'cpp_std=gnu++11', 'b_colorout=auto',
                           'b_staticpic=false', 'stdsplit=false', 'optimization=2', 'b_pie=true'],

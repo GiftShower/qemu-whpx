@@ -23,7 +23,7 @@ jobs:
             ninja patch python
       - name: Patch code
         run: |
-          wget https://raw.githubusercontent.com/kjliew/qemu-3dfx/master/virgil3d/0001-Virgil3D-with-SDL2-OpenGL.patch
+          wget https://raw.githubusercontent.com/GiftShower/qemu-3dfx/master/virgil3d/0001-Virgil3D-with-SDL2-OpenGL.patch
           patch -p0 -i 0001-Virgil3D-with-SDL2-OpenGL.patch
       - name: configure QEMU
         run: >

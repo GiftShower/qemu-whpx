@@ -51,7 +51,7 @@ jobs:
       - name: make artifact
         run: |
           cd $HOME
-          tar -czvf qemu.tar.gz /qemu-virgl
+          tar -czvf qemu.tar.gz ./qemu-virgl
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with :

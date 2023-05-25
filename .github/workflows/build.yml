@@ -19,7 +19,7 @@ jobs:
             mingw-w64-ucrt-x86_64-libslirp mingw-w64-ucrt-x86_64-make
             mingw-w64-ucrt-x86_64-pixman mingw-w64-ucrt-x86_64-pkgconf
             mingw-w64-ucrt-x86_64-SDL2 mingw-w64-ucrt-x86_64-virglrenderer
-            mingw-w64-ucrt-x86_64-qemu-image-util
+            mingw-w64-ucrt-x86_64-qemu-image-util mingw-w64-ucrt-x86_64-python-sphinx
             ninja patch python
       - name: Patch code
         run: |
@@ -35,13 +35,13 @@ jobs:
         run: make -j4
       - name: Move QEMU
         run: |
-          mkdir -p ~/qemu-virgl
-          make DESTDIR=~/qemu-virgl install
-          cd ~/qemu-virgl/msys64/ucrt64/
+          mkdir -p $HOME/qemu-virgl
+          make DESTDIR=$HOME/qemu-virgl install
+          cd $HOME/qemu-virgl/msys64/ucrt64/
           cp $(ldd qemu-system-x86_64.exe | grep -i /ucrt64/ | awk '{print $3}') .
       - name: make Image
         run: |
-          cd ~/qemu-virgl
+          cd $HOMR/qemu-virgl
           qemu-img.exe create -f qcow2 bliss.img 20G
       - name: generate UEFI
         run: |

@@ -1,1 +1,57 @@
+name: Build
+on: [push, pull_request]
 
+jobs:
+  msys2-ucrt64:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >
+            git make mingw-w64-ucrt-x86_64-diffutils
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-glib2
+            mingw-w64-ucrt-x86_64-libslirp mingw-w64-ucrt-x86_64-make
+            mingw-w64-ucrt-x86_64-pixman mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-SDL2 mingw-w64-ucrt-x86_64-virglrenderer
+            mingw-w64-ucrt-x86_64-qemu-image-util
+            ninja patch python
+      - name: Patch code
+        run: |
+          wget https://raw.githubusercontent.com/kjliew/qemu-3dfx/master/virgil3d/0001-Virgil3D-with-SDL2-OpenGL.patch
+          patch -p0 -i 0001-Virgil3D-with-SDL2-OpenGL.patch
+      - name: configure QEMU
+        run: >
+          ./configure --target-list=x86_64-softmmu --prefix=/ucrt64 --enable-whpx
+          --disable-hax --disable-tcg --enable-virglrenderer --enable-sdl
+          --enable-slirp --disable-capstone --disable-tools --disable-guest-agent
+          --disable-gtk
+      - name: Build
+        run: make -j4
+      - name: Move QEMU
+        run: |
+          mkdir -p ~/qemu-virgl
+          make DESTDIR=~/qemu-virgl install
+          cd ~/qemu-virgl/msys64/ucrt64/
+          cp $(ldd qemu-system-x86_64.exe | grep -i /ucrt64/ | awk '{print $3}') .
+      - name: make Image
+        run: |
+          cd ~/qemu-virgl
+          qemu-img.exe create -f qcow2 bliss.img 20G
+      - name: generate UEFI
+        run: |
+          cat msys64/ucrt64/share/edk2-i386-vars.fd msys64/ucrt64/share/edk2-x86_64-code.fd > edk2-x86_64.fd
+      - name: make artifact
+        run: |
+          cd $HOME
+          tar -czvf qemu.tar.gz /qemu-virgl
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with :
+          name: qemu-tarball
+          path: $HOME/qemu.tar.gz

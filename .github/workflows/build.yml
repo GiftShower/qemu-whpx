@@ -58,6 +58,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with :
           name: qemu-tarball
-          path: ~/*
+          path: D:/a/_temp/msys64/home/runneradmin/qemu.tar.gz
       
 
